@@ -13,13 +13,14 @@ final class CommentsViewModel: ObservableObject {
 
   private let commentService: CommentServiceProtocol
   private let postId: Int
-  
+
   init(
     postId: Int,
     commentService: CommentServiceProtocol? = nil
   ) {
     self.postId = postId
-    self.commentService = commentService ?? CommentService()
+    let cacheService = RealmManager.createCacheService()
+    self.commentService = commentService ?? CommentService(cacheService: cacheService)
   }
 
   func loadComments() async {

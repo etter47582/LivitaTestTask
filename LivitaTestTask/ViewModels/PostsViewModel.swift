@@ -16,15 +16,16 @@ final class PostsViewModel: ObservableObject {
   private let userService: UserServiceProtocol
   private var currentUserId: Int
 
-  init(
-    postService: PostServiceProtocol? = nil,
-    userService: UserServiceProtocol? = nil,
-    defaultUserId: Int = 1
-  ) {
-    self.postService = postService ?? PostService()
-    self.userService = userService ?? UserService()
-    self.currentUserId = defaultUserId
-  }
+    init(
+        postService: PostServiceProtocol? = nil,
+        userService: UserServiceProtocol? = nil,
+        defaultUserId: Int = 1
+    ) {
+        let cacheService = RealmManager.createCacheService()
+        self.postService = postService ?? PostService(cacheService: cacheService)
+        self.userService = userService ?? UserService(cacheService: cacheService)
+        self.currentUserId = defaultUserId
+    }
 
   func loadData() async {
     await loadData(for: currentUserId)
@@ -54,3 +55,4 @@ final class PostsViewModel: ObservableObject {
     isLoading = false
   }
 }
+

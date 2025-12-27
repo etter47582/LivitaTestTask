@@ -92,7 +92,7 @@ struct PostRowView: View {
           .font(.headline)
           .foregroundColor(.white)
           .lineLimit(1)
-        
+
         Text(post.body)
           .font(.subheadline)
           .foregroundColor(.gray)
