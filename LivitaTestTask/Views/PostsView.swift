@@ -28,11 +28,30 @@ struct PostsView: View {
           }
         } else {
           VStack(spacing: 0) {
-            Text(viewModel.userName)
-              .font(.title2)
-              .fontWeight(.semibold)
-              .foregroundColor(.white)
-              .padding(.vertical, 16)
+            HStack {
+              Spacer()
+
+              Text(viewModel.userName)
+                .font(.title2)
+                .fontWeight(.semibold)
+                .foregroundColor(.white)
+
+              Spacer()
+
+              NavigationLink(destination: UsersView { user in
+                Task {
+                  await viewModel.loadData(for: user.id)
+                }
+              }) {
+                Image("userIcon")
+                  .resizable()
+                  .scaledToFit()
+                  .frame(width: 24, height: 24)
+                  .foregroundColor(.white)
+              }
+              .padding(.trailing, 16)
+            }
+            .padding(.vertical, 16)
 
             List {
               ForEach(Array(viewModel.posts.enumerated()), id: \.element.id) { index, post in
@@ -73,7 +92,7 @@ struct PostRowView: View {
           .font(.headline)
           .foregroundColor(.white)
           .lineLimit(1)
-
+        
         Text(post.body)
           .font(.subheadline)
           .foregroundColor(.gray)
@@ -83,7 +102,7 @@ struct PostRowView: View {
 
       if !isLast {
         Rectangle()
-          .fill(Color.gray.opacity(0.3))
+          .fill(Color.gray.opacity(0.4))
           .frame(height: 2)
           .shadow(color: .black, radius: 2, x: 0, y: 2)
           .padding(.top, 8)
@@ -97,5 +116,4 @@ struct PostRowView: View {
 #Preview {
   PostsView()
 }
-
 

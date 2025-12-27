@@ -14,8 +14,8 @@ final class PostsViewModel: ObservableObject {
 
   private let postService: PostServiceProtocol
   private let userService: UserServiceProtocol
-  private let defaultUserId: Int
-  
+  private var currentUserId: Int
+
   init(
     postService: PostServiceProtocol? = nil,
     userService: UserServiceProtocol? = nil,
@@ -23,16 +23,21 @@ final class PostsViewModel: ObservableObject {
   ) {
     self.postService = postService ?? PostService()
     self.userService = userService ?? UserService()
-    self.defaultUserId = defaultUserId
+    self.currentUserId = defaultUserId
   }
 
   func loadData() async {
+    await loadData(for: currentUserId)
+  }
+
+  func loadData(for userId: Int) async {
+    currentUserId = userId
     isLoading = true
     errorMessage = nil
 
     do {
-      async let user = userService.fetchUser(id: defaultUserId)
-      async let posts = postService.fetchPosts(for: defaultUserId)
+      async let user = userService.fetchUser(id: userId)
+      async let posts = postService.fetchPosts(for: userId)
 
       let (fetchedUser, fetchedPosts) = try await (user, posts)
 
